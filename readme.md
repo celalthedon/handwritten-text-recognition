@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org)
 [![HuggingFace](https://img.shields.io/badge/HuggingFace-TrOCR-FFBF00?style=flat-square&logo=huggingface&logoColor=black)](https://huggingface.co/microsoft/trocr-base-handwritten)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Gradio](https://img.shields.io/badge/Gradio-App-F97316?style=flat-square&logo=gradio&logoColor=white)](https://gradio.app)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/CelalIbrahimli/handwritten-text-recognition?style=flat-square&color=yellow)](https://github.com/CelalIbrahimli/handwritten-text-recognition/stargazers)
 
@@ -56,32 +56,16 @@ handwritten-text-recognition
 ## 🧠 Model Architecture — Custom HTR
 
 ```
-Input Image (grayscale, normalized)
-        │
-        ▼
-┌───────────────────┐
-│   CNN Backbone    │  → Extracts local visual features
-│  (Conv + Pool)    │
-└────────┬──────────┘
-         │  Feature Map
-         ▼
-┌───────────────────┐
-│     BiLSTM        │  → Models sequential dependencies (left ↔ right)
-│  (2 layers)       │
-└────────┬──────────┘
-         │
-         ▼
-┌───────────────────┐
-│   Linear Layer    │  → Projects to vocabulary size
-└────────┬──────────┘
-         │
-         ▼
-┌───────────────────┐
-│   CTC Decoder     │  → Aligns predictions without segmentation labels
-└────────┬──────────┘
-         │
-         ▼
-    Predicted Text
+flowchart LR
+    A[Input Image] --> B[Preprocessing<br/>Resize Normalize Grayscale]
+    B --> C[CNN Backbone<br/>Conv + ReLU + Pool]
+    C --> D[Feature Map]
+    D --> E[Reshape to Sequence]
+    E --> F[BiLSTM Layer 1]
+    F --> G[BiLSTM Layer 2]
+    G --> H[Linear Layer]
+    H --> I[CTC Loss / Decoder]
+    I --> J[Recognized Text]
 ```
 
 **Why CTC?** Connectionist Temporal Classification allows the model to train without character-level bounding box annotations — only word-level transcriptions are needed.
@@ -105,24 +89,17 @@ Input Image (grayscale, normalized)
 For full-page handwritten documents, a segmentation pipeline is applied before recognition:
 
 ```
-Full Page Image
-      │
-      ▼
-  Preprocessing
-  (grayscale, threshold, denoise)
-      │
-      ▼
-  Line Segmentation
-  (horizontal projection profile)
-      │
-      ▼
-  Crop Individual Lines
-      │
-      ▼
-  Run HTR Model per Line
-      │
-      ▼
-  Merge & Output Full Text
+flowchart TD
+    A[Full Page Image] --> B[Convert to Grayscale]
+    B --> C[Thresholding + Denoising]
+    C --> D[Horizontal Projection Profile]
+    D --> E[Detect Line Regions]
+    E --> F[Crop Individual Lines]
+    F --> G[Generate Image Variants]
+    G --> H[Run TrOCR on Each Variant]
+    H --> I[Pick Best Prediction]
+    I --> J[Merge Lines]
+    J --> K[Final Recognized Text]
 ```
 
 ---
@@ -149,12 +126,12 @@ model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-handwri
 
 ---
 
-## 🚀 Streamlit Application
+## 🚀 Gradio Application
 
 An interactive web app for uploading and transcribing handwritten images.
 
 ```bash
-streamlit run app.py
+python app.py
 ```
 
 **Features:**
@@ -181,7 +158,7 @@ Or install manually:
 
 ```bash
 pip install torch torchvision transformers accelerate \
-            sentencepiece streamlit opencv-python-headless \
+            sentencepiece gradio opencv-python-headless \
             pillow matplotlib numpy
 ```
 
@@ -215,7 +192,7 @@ jupyter notebook reading_multiple_lines_microsoft_model.ipynb
 ### 4. Web Application
 
 ```bash
-streamlit run app.py
+python app.py
 ```
 
 ---
@@ -228,7 +205,7 @@ torchvision
 transformers>=4.30.0
 accelerate
 sentencepiece
-streamlit
+gradio
 opencv-python-headless
 pillow
 matplotlib
@@ -236,22 +213,6 @@ numpy
 ```
 
 ---
-
-## 🗺️ Roadmap
-
-- [x] Custom CNN + BiLSTM + CTC model
-- [x] Multi-line page segmentation
-- [x] TrOCR integration
-- [x] Streamlit deployment app
-- [ ] Beam search decoding
-- [ ] Language model post-correction (spell checking)
-- [ ] Advanced deskew & noise removal
-- [ ] HuggingFace Spaces demo
-- [ ] Docker containerization
-- [ ] Training on larger HTR datasets (IAM, RIMES)
-
----
-
 ## ⚠️ Limitations
 
 - Custom model performance depends heavily on handwriting style similarity to training data
@@ -287,6 +248,6 @@ Contributions, issues and feature requests are welcome!
 
 **If this project helped you, please consider giving it a ⭐**
 
-*Built with PyTorch · Transformers · OpenCV · Streamlit*
+*Built with PyTorch · Transformers · OpenCV · Gradio*
 
 </div>
