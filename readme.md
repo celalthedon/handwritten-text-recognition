@@ -56,6 +56,7 @@ handwritten-text-recognition
 ## 🧠 Model Architecture — Custom HTR
 
 ```
+```mermaid
 flowchart LR
     A[Input Image] --> B[Preprocessing<br/>Resize Normalize Grayscale]
     B --> C[CNN Backbone<br/>Conv + ReLU + Pool]
@@ -64,8 +65,9 @@ flowchart LR
     E --> F[BiLSTM Layer 1]
     F --> G[BiLSTM Layer 2]
     G --> H[Linear Layer]
-    H --> I[CTC Loss / Decoder]
+    H --> I[CTC Decoder]
     I --> J[Recognized Text]
+```
 ```
 
 **Why CTC?** Connectionist Temporal Classification allows the model to train without character-level bounding box annotations — only word-level transcriptions are needed.
@@ -89,9 +91,10 @@ flowchart LR
 For full-page handwritten documents, a segmentation pipeline is applied before recognition:
 
 ```
+```mermaid
 flowchart TD
     A[Full Page Image] --> B[Convert to Grayscale]
-    B --> C[Thresholding + Denoising]
+    B --> C[Thresholding and Denoising]
     C --> D[Horizontal Projection Profile]
     D --> E[Detect Line Regions]
     E --> F[Crop Individual Lines]
