@@ -1,0 +1,8 @@
+gradio
+torch
+transformers
+sentencepiece
+opencv-python-headless
+pillow
+numpy
+accelerate
