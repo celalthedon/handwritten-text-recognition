@@ -35,17 +35,20 @@ Two approaches are implemented and compared:
 ## 🗂️ Repository Structure
 
 ```
-handwritten-text-recognition/
+handwritten-text-recognition
 │
-├── 📒 handwriting_recognition_model.ipynb         # Custom model: training & evaluation
-├── 📒 reading_multiple_lines.ipynb                # Multi-line recognition (custom model)
-├── 📒 reading_multiple_lines_microsoft_model.ipynb # Multi-line recognition (TrOCR)
-│
-├── 🤖 htr_epoch043_best.pt                        # Best model checkpoint (CER: 0.1038)
-│
-├── 🚀 app.py                                      # Streamlit web application
+├── app.py
 ├── requirements.txt
-└── README.md
+├── README.md
+│
+├── notebooks
+│   ├── handwriting_recognition_model.ipynb
+│   ├── reading_multiple_lines.ipynb
+│   └── reading_multiple_lines_microsoft_model_ipynb.ipynb
+│
+└── models
+    ├── best_model.pt
+    └── htr_epoch043_best.pt
 ```
 
 ---
